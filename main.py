@@ -73,9 +73,9 @@ def play(dealer, player, entities):
         # If the dealer and player are both standing check win.
         if player.stand and dealer.stand:
             try:
-                print(f"\t\t{check_win(dealer, player).role} WINS!\n")
+                print(f"\t{check_win(dealer, player).role} WINS!\n")
             except AttributeError:
-                print("\t\tDRAW!\n")
+                print("\tDRAW!\n")
                 
             new_game(dealer, entities)
 
@@ -107,7 +107,7 @@ def check_bust(entity):
     '''
     if entity.value > 21:
         print(entity.view())
-        print(f"\t\t{entity.role} BUST!\n\n")
+        print(f"\t{entity.role} BUST!\n\n")
         return True
 
     return False
