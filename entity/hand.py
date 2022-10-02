@@ -98,7 +98,7 @@ class Hand():
         for card in self.hand:
             index += f"\t{card}\n"
 
-        return f"୭ {self.role} Hand\n\n{index}\n\t\t✧ {self.value} ✧\n\n"
+        return f"୭ {self.role} Hand\n\n{index}\n\t ✧ {self.value} ✧\n\n"
 
     
     def __str__(self):
