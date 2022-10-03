@@ -8,3 +8,5 @@ venv/
 # Replit
 .replit
 replit.nix
+poetry.lock
+pyproject.toml
