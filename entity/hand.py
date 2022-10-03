@@ -1,5 +1,7 @@
 # Hand
 # Object that represents the players hand.
+from bank.account import Account
+
 class Hand():
 
     def __init__(self, role):
@@ -12,7 +14,8 @@ class Hand():
         #     print(f"{role} opens the table.")
         # else:
         #     print(f"{role} sits at the table.")
-        
+
+        self.account = Account(role)
         self.hand = []
         self.value = 0
         self.role = role

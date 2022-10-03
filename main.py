@@ -34,6 +34,10 @@ def play(dealer, player, entities):
             # Player turn
             select = menu()
 
+            while select == "Bank":
+                player.account.menu()
+                select = menu()
+
             if select == "Hit":
                 player.hit(dealer)
                 player.total()
@@ -47,8 +51,7 @@ def play(dealer, player, entities):
                 player.stay()
                 select = ""  # Reset select
 
-
-         # Ensure dealer has enouh cards in deck
+        # Ensure dealer has enouh cards in deck
         # if len(dealer.deck.deck) == 0:
         #     print("Dealer pulls new deck.\n")
         #     dealer.new_deck() 
@@ -117,8 +120,8 @@ def menu():
     '''
     Displays the menu and returns the selection
     '''
-    options = ["[h] Hit", "[s] Stand", "[q] Quit"]
-    options_dict = {0: 'Hit', 1: 'Stand', 2: 'Quit'}
+    options = ["[h] Hit", "[s] Stand", "[b] Bank", "[q] Quit"]
+    options_dict = {0: 'Hit', 1: 'Stand', 2: "Bank", 3: 'Quit'}
 
     terminal_menu = TerminalMenu(options, title="\n- Blackjack -\n")
     selection = options_dict[terminal_menu.show()]
