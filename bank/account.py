@@ -21,26 +21,30 @@ class Account:
         print(f"{self.name} deposited ${funds:.2f}")
         self.balance += funds
 
+    
+    def withdraw(self, funds):
+        '''
+        Withdraw from account to purchase tokens.
+        '''
+
+        if funds <= self.balance:
+            print(f"\n{self.name} withdrew ${funds:.2f}")
+            self.balance -= funds
+            
+            return True
+            
+        else:
+            print(f"\n{self.name} has insufficient funds.")
+
+            return False
+
+    
     def add_tokens(self, opt, sum=0):
         '''
         From menu exchange, converts cash to tokens. Adds to tokens on win.
         Options: E = Exchange, W = Win
         '''
         if opt == 'E':
-
-            # Input dollar amount.
-            # value = None
-            # while not value:
-            #     try:
-            #         value = int(input("\nEnter a full dollar amount.\n\tValue: $"))
-
-            #         if value <= 0:
-            #             print("\nInvalid input: Please enter a value greater than 0.\n")
-            #             value = None
-                
-            #     except ValueError:
-            #         print("\nInvalid input: Please enter a number only.\n")
-
             # Input number of tokens
             token_options = ["[1] 1", "[2] 5", "[3] 10", "[4] 20", "[5] 100", "[d] Done"]
             token_options_dict = {0: '1', 1: '5', 2: '10', 3: '20', 4: '100', 5: "Done"}
@@ -61,7 +65,8 @@ class Account:
                             amount = None
                             
                         else:
-                            if amount > 0:
+                            # Check the amount is greater than 0 and that enough funds were withdrawn
+                            if amount > 0 and self.withdraw(int(token_selection) * amount):
                                 for i in range(amount):
                                     self.tokens[token_selection].append(Token(token_selection, int(token_selection)))
                                     value += int(token_selection)
@@ -74,7 +79,8 @@ class Account:
                     token_selection = token_options_dict[token_menu.show()]
                     
             # Calculate tokens returned based on desired amount and dollar amount.
-            print(f"\n{self.name} purchased ¢{total} tokens valued at ${value}.")
+            if total > 0:
+                print(f"\n{self.name} purchased {total}x tokens valued at ${value}.\n")
         
         elif opt == 'W':
             pass
@@ -132,4 +138,9 @@ class Account:
         
     
     def __str__(self):
-        return f"\n{self.name}'s Account\n\tBalance: ${self.balance:.2f}\n\tTokens:  {self.tokens}\n"
+        tokens = ""
+        for t in self.tokens:
+            if len(self.tokens[t]) > 0:
+                tokens += (f"¢{t} {len(self.tokens[t])}x ${int(t) * len(self.tokens[t])}, ")
+        
+        return f"\n{self.name}'s Account\n\tBalance: ${self.balance:.2f}\n\tTokens:  {tokens[:-2]}\n"
