@@ -53,27 +53,12 @@ class Hand():
         Calculates the value of the hand.
         '''
         total = 0
-        # for card in self.hand:
-        #     if total > 21:
-        #         # This only works if the current card added to the value of
-        #         # the hand making it greater than 21 is an Ace.
-                
-        #         if card.value == 14:
-        #             card.value = 1
-                    
-        #             self.total() # retotal
-        #             return
-
-        #     # All other cards simply add value to total.
-        #     else:
-        #         total += card.value
 
         for card in self.hand:
             total += card.value        
 
         if total > 21:
-            # This only works if the current card added to the value of
-            # the hand making it greater than 21 is an Ace.
+            # Revalues the Ace in the hand in case the total hand value sums over 21.
             for card in self.hand:
                 if card.rank == "Ace" and card.value == 14:
                     card.value = 1

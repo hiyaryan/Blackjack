@@ -4,8 +4,6 @@ from simple_term_menu import TerminalMenu
 from entity.hand import Hand
 from entity.dealer import Dealer
 
-# TODO: Create banking system for player/dealer. 
-
 # FIXE: Generalize dealer and player into entities
 def play(dealer, player, entities):
     '''
@@ -16,15 +14,11 @@ def play(dealer, player, entities):
     # Present menu to the player
     select = ""
     place_bet = True
-    tokens = []
     while select != 'Quit':
         # If bust the round ends and the opponent wins the round
         bust = False
 
         # Ensure dealer has enouh cards in deck
-        # if len(dealer.deck.deck) == 0:
-        #     print("Dealer pulls new deck.\n")
-        #     dealer.new_deck()
         dealer.check_deck()
         
         # Player does not stand
@@ -34,10 +28,12 @@ def play(dealer, player, entities):
             print(player.view())
 
             if place_bet:
-                # TODO: Add mechanism to subtract tokens to be bet from Account.
                 print(f"{player.role} place your bet.\n")
                 while not player.account.subtract_tokens('B'):
                     player.account.menu()
+
+                # Dealer always matches the bet.
+                dealer.account.subtract_tokens('B', tokens=player.account.bet)
                     
                 place_bet = False
             
@@ -61,15 +57,12 @@ def play(dealer, player, entities):
                 player.stay()
                 select = ""  # Reset select
 
-        # Ensure dealer has enouh cards in deck
-        # if len(dealer.deck.deck) == 0:
-        #     print("Dealer pulls new deck.\n")
-        #     dealer.new_deck() 
+        # Ensure dealer has enouh cards in deck.
         dealer.check_deck()
             
         # Dealer turn
         if not bust and not dealer.stand:
-            # Dealer will always hit if below 17
+            # Dealer will always hit if below 17.
             if dealer.value < 17:
                 dealer.hit(dealer)
                 dealer.total()
@@ -79,7 +72,7 @@ def play(dealer, player, entities):
                 if bust:
                     place_bet = new_game(dealer, entities)
 
-            # Dealer will always stand if 17 or above
+            # Dealer will always stand if 17 or above.
             else:
                 dealer.stay()
 

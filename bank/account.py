@@ -102,6 +102,12 @@ class Account:
 
         # Subtract tokens from the account to be bet.
         elif opt == 'B':
+
+            if self.name == "Dealer":
+                self.bet = tokens
+                print(f"{self.name} matches the bet.")
+                return
+                
             if tokens_available:
                 bet = []
                 value = 0
