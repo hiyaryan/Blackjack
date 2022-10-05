@@ -105,7 +105,21 @@ class Account:
 
         # Subtract tokens from the account to be cashed out.
         if opt == 'E':
-            print(f"{self.name} is selling tokens...")
+            amount = 0
+            total = 0
+
+            # Sell all tokens for cash.
+            for key in self.tokens:
+                total += int(key) * len(self.tokens[key])
+                amount += len(self.tokens[key])
+                self.tokens[key] = []
+
+            if amount == 0:
+                print(f"{self.name} has no tokens to cash out.")
+                
+            else:
+                self.balance += total
+                print(f"{self.name} cashed out {amount}x tokens for ${total}.")
 
         # Subtract tokens from the account to be bet.
         elif opt == 'B':
@@ -167,7 +181,7 @@ class Account:
                 self.bet = bet
 
                 if len(bet) != 0:
-                    print(f"{self.name} is betting {len(bet)}x tokens valued at ${value}")
+                    print(f"{self.name} is betting {len(bet)}x tokens valued at ${value}.")
                     return True
 
                 else:
