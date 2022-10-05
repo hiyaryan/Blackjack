@@ -84,7 +84,14 @@ class Account:
                 print(f"\n{self.name} purchased {total}x tokens valued at ${value}.\n")
         
         elif opt == 'W':
-            pass
+            # Add tokens to the current bet
+            self.bet.extend(tokens)
+
+            # Add bet to account tokens.
+            for token in self.bet:
+                self.tokens[token.face].append(token)
+
+            self.bet = []
 
     def subtract_tokens(self, opt, tokens=None):
         '''
@@ -103,17 +110,21 @@ class Account:
         # Subtract tokens from the account to be bet.
         elif opt == 'B':
 
+            # If the account is the dealer's match the bet then return.
             if self.name == "Dealer":
                 self.bet = tokens
-                print(f"{self.name} matches the bet.")
+                print(f"{self.name} matches the bet.\n")
                 return
-                
+
+            # If the account is the players and there are tokens available
+            # access the Bet menu to make a bet.
             if tokens_available:
                 bet = []
                 value = 0
             
                 print(self)
-            
+
+                # Options for the bet menu depend on the tokens available.
                 options = []
                 i = 1
                 for key in self.tokens:
@@ -126,6 +137,8 @@ class Account:
                 bank_menu = TerminalMenu(options, title=f"\n- {self.name}'s Bet -\n")
                 selection = bank_menu.show()
 
+                # Present the Bet menu, the last option at index len(optios)-1
+                # is the Bet option.
                 while selection != len(options) - 1:
                     '''
                     Bet menu item example: `[1] ¢20 5x`. Split with " " delimiter.
@@ -152,9 +165,14 @@ class Account:
                     selection = bank_menu.show()
 
                 self.bet = bet
-                
-                print(f"{self.name} is betting {len(bet)}x tokens valued at ${value}")
-                return True
+
+                if len(bet) != 0:
+                    print(f"{self.name} is betting {len(bet)}x tokens valued at ${value}")
+                    return True
+
+                else:
+                    print(f"{self.name} must place a bet to play.")
+                    return False
 
             else:
                 print(f"{self.name} has no tokens to bet.")
@@ -166,13 +184,13 @@ class Account:
         Menu to navigate account.
         Options: Details, Deposit, Exchange
         '''
-        options = ["[i] Details", "[d] Deposit", "[e] Exchange", "[r] Return"]
-        options_dict = {0: 'Details', 1: 'Deposit', 2: "Exchange", 3: 'Return'}
+        options = ["[i] Details", "[d] Deposit", "[e] Exchange", "[r] Ready", "[q] Quit"]
+        options_dict = {0: 'Details', 1: 'Deposit', 2: "Exchange", 3: 'Ready', 4: 'Quit'}
 
         bank_menu = TerminalMenu(options, title=f"\n- {self.name}'s Bank -\n")
         selection = options_dict[bank_menu.show()]
 
-        while selection != "Return":
+        while selection != "Ready" and selection != "Quit":
             if selection == "Details":
                 print(self)
                 
@@ -200,6 +218,9 @@ class Account:
                     self.subtract_tokens('E')
             
             selection = options_dict[bank_menu.show()]
+
+        if selection == "Quit":
+            return "Quit"
         
     
     def __str__(self):

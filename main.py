@@ -27,14 +27,22 @@ def play(dealer, player, entities):
             print(dealer.view())
             print(player.view())
 
+            # Place bet on first loop.
             if place_bet:
-                print(f"{player.role} place your bet.\n")
-                while not player.account.subtract_tokens('B'):
-                    player.account.menu()
 
+                # While loop opens Bet menu and only advances if bet is made.
+                print(f"{player.role} place your bet.\n")
+                while select != "Quit" and not player.account.subtract_tokens('B'):
+                    select = player.account.menu()
+
+                # Quits the entire game by breaking out of the loop.
+                if select == "Quit":
+                    break
+                    
                 # Dealer always matches the bet.
                 dealer.account.subtract_tokens('B', tokens=player.account.bet)
-                    
+
+                #Bets have been placed, do not ask again until new game.
                 place_bet = False
             
             # Player turn
@@ -56,6 +64,9 @@ def play(dealer, player, entities):
             elif select == "Stand":
                 player.stay()
                 select = ""  # Reset select
+
+            elif select == "Quit":
+                break
 
         # Ensure dealer has enouh cards in deck.
         dealer.check_deck()
@@ -86,7 +97,7 @@ def play(dealer, player, entities):
             place_bet = new_game(dealer, entities)
 
     if select == 'Quit':
-        print("\tGoodbye.")
+        print("\n\tGoodbye.\n")
 
 
 def check_win(dealer, player):
@@ -106,6 +117,7 @@ def check_win(dealer, player):
 
     else:
         # TODO: Add mechanism to add tokens that were bet to Account.
+        player.account.add_tokens("W", tokens=dealer.account.bet)
         return player
 
 
