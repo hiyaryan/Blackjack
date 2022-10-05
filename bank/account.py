@@ -112,7 +112,7 @@ class Account:
 
             # If the account is the dealer's match the bet then return.
             if self.name == "Dealer":
-                self.bet = tokens
+                self.bet.extend(tokens)
                 print(f"{self.name} matches the bet.\n")
                 return
 

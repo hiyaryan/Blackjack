@@ -91,10 +91,26 @@ def play(dealer, player, entities):
         if player.stand and dealer.stand:
             try:
                 print(f"\t{check_win(dealer, player).role} WINS!\n")
+                
             except AttributeError:
                 print("\tDRAW!\n")
+                bust = True
                 
             place_bet = new_game(dealer, entities)
+
+        '''
+        Bust occurs in three instances:
+            1. The players hand is valued over 21
+            2. The dealers hand is valued over 21
+            3. The player and dealer draw.
+
+        For each of these instances the bets are added to a pot
+        which is the bet in the dealers account. If the player wins
+        the player gets all of the money in the pot.
+        '''
+        if bust:
+            dealer.account.bet.extend(player.account.bet)
+            player.account.bet = []
 
     if select == 'Quit':
         print("\n\tGoodbye.\n")
