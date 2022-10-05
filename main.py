@@ -15,6 +15,8 @@ def play(dealer, player, entities):
 
     # Present menu to the player
     select = ""
+    place_bet = True
+    tokens = []
     while select != 'Quit':
         # If bust the round ends and the opponent wins the round
         bust = False
@@ -31,6 +33,14 @@ def play(dealer, player, entities):
             print(dealer.view())
             print(player.view())
 
+            if place_bet:
+                # TODO: Add mechanism to subtract tokens to be bet from Account.
+                print(f"{player.role} place your bet.\n")
+                while not player.account.subtract_tokens('B'):
+                    player.account.menu()
+                    
+                place_bet = False
+            
             # Player turn
             select = menu()
 
@@ -45,7 +55,7 @@ def play(dealer, player, entities):
                 # Check bust. If bust the table is cleared and reset.
                 bust = check_bust(player)
                 if bust:
-                    new_game(dealer, entities)
+                    place_bet = new_game(dealer, entities)
 
             elif select == "Stand":
                 player.stay()
@@ -67,7 +77,7 @@ def play(dealer, player, entities):
                 # Check bust. If bust the table is cleared and reset.
                 bust = check_bust(dealer)
                 if bust:
-                    new_game(dealer, entities)
+                    place_bet = new_game(dealer, entities)
 
             # Dealer will always stand if 17 or above
             else:
@@ -80,7 +90,7 @@ def play(dealer, player, entities):
             except AttributeError:
                 print("\tDRAW!\n")
                 
-            new_game(dealer, entities)
+            place_bet = new_game(dealer, entities)
 
     if select == 'Quit':
         print("\tGoodbye.")
@@ -88,7 +98,8 @@ def play(dealer, player, entities):
 
 def check_win(dealer, player):
     '''
-    Checks the game hand only after each player elects to stand.
+    Checks the game hand only after each player elects to stand. Awards winner
+    with tokens bet on the table hands.
     '''
     # Reset stand for both dealer and player
     dealer.stand = False
@@ -101,6 +112,7 @@ def check_win(dealer, player):
         return dealer
 
     else:
+        # TODO: Add mechanism to add tokens that were bet to Account.
         return player
 
 
@@ -135,6 +147,8 @@ def new_game(dealer, entities):
     '''
     dealer.clear_table(entities)
     dealer.setup_table(entities)
+
+    return True
 
     
 def initialize():

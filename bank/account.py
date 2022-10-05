@@ -13,6 +13,7 @@ class Account:
         self.name = name
         self.balance = 0
         self.tokens = {'1': [], '5': [], '10': [], '20': [], '100': []}
+        self.bet = []
     
     def deposit(self, funds):
         '''
@@ -39,22 +40,22 @@ class Account:
             return False
 
     
-    def add_tokens(self, opt, sum=0):
+    def add_tokens(self, opt, tokens=None):
         '''
         From menu exchange, converts cash to tokens. Adds to tokens on win.
         Options: E = Exchange, W = Win
         '''
         if opt == 'E':
             # Input number of tokens
-            token_options = ["[1] 1", "[2] 5", "[3] 10", "[4] 20", "[5] 100", "[d] Done"]
-            token_options_dict = {0: '1', 1: '5', 2: '10', 3: '20', 4: '100', 5: "Done"}
+            token_options = ["[1] ¢1", "[2] ¢5", "[3] ¢10", "[4] ¢20", "[5] ¢100", "[r] Return"]
+            token_options_dict = {0: '1', 1: '5', 2: '10', 3: '20', 4: '100', 5: "Return"}
 
             token_menu = TerminalMenu(token_options, title="\n- Tokens -\n")
             token_selection = token_options_dict[token_menu.show()]
 
             total = 0
             value = 0
-            while token_selection != 'Done':
+            while token_selection != 'Return':
                 amount = None
                 while not amount:
                     try:
@@ -85,44 +86,102 @@ class Account:
         elif opt == 'W':
             pass
 
-    def subtract_tokens(self, opt, diff=0):
+    def subtract_tokens(self, opt, tokens=None):
         '''
-        From menu exchange, converts tokens to cash. Subtracts from tokens on lose.
-        Options: E = Exchange, L = Lose
+        From menu exchange, converts tokens to cash. Subtracts from tokens on bet.
+        Options: E = Exchange, B = Bet
         '''
+        tokens_available = False
+        for key in self.tokens:
+            if len(self.tokens[key]) > 0:
+                tokens_available = True
+
+        # Subtract tokens from the account to be cashed out.
         if opt == 'E':
             print(f"{self.name} is selling tokens...")
-        
-        elif opt == 'L':
-            pass
+
+        # Subtract tokens from the account to be bet.
+        elif opt == 'B':
+            if tokens_available:
+                bet = []
+                value = 0
+            
+                print(self)
+            
+                options = []
+                i = 1
+                for key in self.tokens:
+                    if len(self.tokens[key]) > 0:
+                        options.append(f"{[i]} ¢{key} {len(self.tokens[key])}x")
+                        i += 1
+
+                options.append("[b] Bet")
+
+                bank_menu = TerminalMenu(options, title=f"\n- {self.name}'s Bet -\n")
+                selection = bank_menu.show()
+
+                while selection != len(options) - 1:
+                    '''
+                    Bet menu item example: `[1] ¢20 5x`. Split with " " delimiter.
+                        option[0] = [1]
+                        option[1] = ¢20
+                        option[2] = 5x
+                    '''
+                    amount = int(options[selection].split(' ')[2][:-1]) - 1
+
+                    # Subtracts a token from the bank and appends it to the bet
+                    if amount >= 0:
+                        token_info = f"{options[selection].split(' ')[0]} {options[selection].split(' ')[1]} {amount}x"
+                        options[selection] = token_info
+
+                        token = self.tokens[options[selection].split(' ')[1][1:]].pop()
+                        bet.append(token)
+                        
+                        value += int(options[selection].split(' ')[1][1:])
+                        
+                        if amount == 0:
+                            options.pop(selection)
+                    
+                    bank_menu = TerminalMenu(options, title=f"\n- {self.name}'s Bet -\n")
+                    selection = bank_menu.show()
+
+                self.bet = bet
+                
+                print(f"{self.name} is betting {len(bet)}x tokens valued at ${value}")
+                return True
+
+            else:
+                print(f"{self.name} has no tokens to bet.")
+                return False
+            
 
     def menu(self):
         '''
         Menu to navigate account.
         Options: Details, Deposit, Exchange
         '''
-        options = ["[i] Details", "[d] Deposit", "[e] Exchange", "[b] Back"]
-        options_dict = {0: 'Details', 1: 'Deposit', 2: "Exchange", 3: 'Back'}
+        options = ["[i] Details", "[d] Deposit", "[e] Exchange", "[r] Return"]
+        options_dict = {0: 'Details', 1: 'Deposit', 2: "Exchange", 3: 'Return'}
 
         bank_menu = TerminalMenu(options, title=f"\n- {self.name}'s Bank -\n")
         selection = options_dict[bank_menu.show()]
 
-        while selection != "Back":
+        while selection != "Return":
             if selection == "Details":
                 print(self)
                 
             elif selection == "Deposit":
-                deposit_options = ["[1] $1.00", "[2] $5.00", "[3] $10.00", "[4] $20.00", "[5] $100.00", "[b] Back"]
-                deposit_options_dict = {0: 1, 1: 5, 2: 10, 3: 20, 4: 100, 5: "Back"}
+                deposit_options = ["[1] $1.00", "[2] $5.00", "[3] $10.00", "[4] $20.00", "[5] $100.00", "[r] Return"]
+                deposit_options_dict = {0: 1, 1: 5, 2: 10, 3: 20, 4: 100, 5: "Return"}
 
                 deposit_menu = TerminalMenu(deposit_options, title="\n- Deposit -\n")
                 deposit_selection = deposit_options_dict[deposit_menu.show()]
 
-                if deposit_selection != "Back":
+                if deposit_selection != "Return":
                     self.deposit(deposit_selection)
                 
             elif selection == "Exchange":
-                exchange_options = ["[p] Buy Tokens", "[s] Sell Tokens", "[b] Back"]
+                exchange_options = ["[b] Buy Tokens", "[s] Sell Tokens", "[r] Return"]
                 exchange_options_dict = {0: 'Buy', 1: 'Sell', 2: "Back"}
 
                 exchange_menu = TerminalMenu(exchange_options, title="\n- Exchange -\n")
