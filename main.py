@@ -5,6 +5,7 @@ from entity.hand import Hand
 from entity.dealer import Dealer
 
 # FIXE: Generalize dealer and player into entities
+# TODO: Hide all cards except the first card.
 def play(dealer, player, entities):
     '''
     Game logic
@@ -17,7 +18,6 @@ def play(dealer, player, entities):
     while select != 'Quit':
         # If bust the round ends and the opponent wins the round
         bust = False
-        who_bust = ""
 
         # Ensure dealer has enouh cards in deck
         dealer.check_deck()
@@ -45,6 +45,10 @@ def play(dealer, player, entities):
 
                 #Bets have been placed, do not ask again until new game.
                 place_bet = False
+
+                # Present hands
+                print(dealer.view())
+                print(player.view())
             
             # Player turn
             select = menu()
@@ -60,7 +64,6 @@ def play(dealer, player, entities):
                 # Check bust. If bust the table is cleared and reset.
                 bust = check_bust(player)
                 if bust:
-                    who_bust = player.role
                     place_bet = new_game(dealer, entities)
 
             elif select == "Stand":
@@ -83,7 +86,6 @@ def play(dealer, player, entities):
                 # Check bust. If bust the table is cleared and reset.
                 bust = check_bust(dealer)
                 if bust:
-                    who_bust = dealer.role
                     place_bet = new_game(dealer, entities)
 
             # Dealer will always stand if 17 or above.
@@ -98,7 +100,6 @@ def play(dealer, player, entities):
             except AttributeError:
                 print("\tDRAW!\n")
                 bust = True
-                who_bust = dealer.role
                 
             place_bet = new_game(dealer, entities)
 
@@ -108,19 +109,11 @@ def play(dealer, player, entities):
             2. The dealers hand is valued over 21.
             3. The player and dealer draw.
 
-        For instances 2 and 3 the bets are added to a pot, the bet in the dealers account. 
-        For instance 1, the player loses their bet. If the player wins the player gets all 
-        of the money in the pot and vice versa.
+        For all instances the bets are added to a pot, the bet in the dealers account. 
+        Since bust adds to the pot, the players cards, except for the first, should be hidden.
         '''
         if bust:
-            if who_bust == "Dealer":
-                dealer.account.bet.extend(player.account.bet)
-            
-            else:
-                dealer.account.bet = []
-
-            player.account.bet = []
-            
+            dealer.account.bet.extend(player.account.bet)
 
     if select == 'Quit':
         print("\n\tGoodbye.\n")
@@ -139,10 +132,10 @@ def check_win(dealer, player):
         return None
         
     if dealer.value > player.value:
+        dealer.account.add_tokens("W", tokens=dealer.account.bet)
         return dealer
 
     else:
-        # TODO: Add mechanism to add tokens that were bet to Account.
         player.account.add_tokens("W", tokens=dealer.account.bet)
         return player
 
