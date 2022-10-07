@@ -20,27 +20,23 @@ class Deck:
             for suit in suits:
                 self.deck.append(Card(rank, suit))
 
-    
     def shuffle(self):
         '''
         Shuffles this deck using the shuffle method in the random library.
         '''
         random.shuffle(self.deck)
 
-    
     def remove_top_card(self):
         '''
         Pops the first card off the deck removing in from the stack.
         '''
         return self.deck.pop()
 
-
     def deck_len(self):
         '''
         Returns the length of the deck.
         '''
-        
-    
+
     def __str__(self):
         '''
         Prints the number of decks representing this object.

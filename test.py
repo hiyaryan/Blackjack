@@ -21,7 +21,7 @@ print()
 
 for card in new_deck.deck:
     print(card)
-    
+
 new_deck.shuffle()
 print(f"Shuffle 1: {new_deck.deck[-1]}")
 
@@ -33,11 +33,11 @@ print(f"Shuffle 3: {new_deck.deck[-1]}")
 
 for card in new_deck.deck:
     print(card)
-    
+
 print()
 
 # Removed number_of_decks since dealer can simply create a new deck.
-# new_deck_two = Deck(number_of_decks=2) 
+# new_deck_two = Deck(number_of_decks=2)
 # print(new_deck_two)
 
 print()
@@ -58,7 +58,6 @@ print(player)
 
 player.stay()
 print(player)
-
 
 # Dealer object tests
 # ----------------------------------------

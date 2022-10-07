@@ -4,8 +4,10 @@ from simple_term_menu import TerminalMenu
 from entity.hand import Hand
 from entity.dealer import Dealer
 
+
 # FIXE: Generalize dealer and player into entities
 # TODO: Hide all cards except the first card.
+# TODO: Make console less verbose.
 def play(dealer, player, entities):
     '''
     Game logic
@@ -21,7 +23,7 @@ def play(dealer, player, entities):
 
         # Ensure dealer has enouh cards in deck
         dealer.check_deck()
-        
+
         # Player does not stand
         if not bust and not player.stand:
             # Present hands
@@ -33,23 +35,20 @@ def play(dealer, player, entities):
 
                 # While loop opens Bet menu and only advances if bet is made.
                 print(f"{player.role} place your bet.\n")
-                while select != "Quit" and not player.account.subtract_tokens('B'):
+                while select != "Quit" and not player.account.subtract_tokens(
+                        'B'):
                     select = player.account.menu()
 
                 # Quits the entire game by breaking out of the loop.
                 if select == "Quit":
                     break
-                    
+
                 # Dealer always matches the bet.
                 dealer.account.subtract_tokens('B', tokens=player.account.bet)
 
                 #Bets have been placed, do not ask again until new game.
                 place_bet = False
 
-                # Present hands
-                print(dealer.view())
-                print(player.view())
-            
             # Player turn
             select = menu()
 
@@ -75,7 +74,7 @@ def play(dealer, player, entities):
 
         # Ensure dealer has enouh cards in deck.
         dealer.check_deck()
-            
+
         # Dealer turn
         if not bust and not dealer.stand:
             # Dealer will always hit if below 17.
@@ -96,13 +95,12 @@ def play(dealer, player, entities):
         if player.stand and dealer.stand:
             try:
                 print(f"\t{check_win(dealer, player).role} WINS!\n")
-                
+
             except AttributeError:
                 print("\tDRAW!\n")
                 bust = True
-                
-            place_bet = new_game(dealer, entities)
 
+            place_bet = new_game(dealer, entities)
         '''
         Bust occurs in three instances:
             1. The players hand is valued over 21.
@@ -116,7 +114,7 @@ def play(dealer, player, entities):
             dealer.account.bet.extend(player.account.bet)
 
     if select == 'Quit':
-        print("\n\tGoodbye.\n")
+        print("\nGoodbye.\n")
 
 
 def check_win(dealer, player):
@@ -130,7 +128,7 @@ def check_win(dealer, player):
 
     if dealer.value == player.value:
         return None
-        
+
     if dealer.value > player.value:
         dealer.account.add_tokens("W", tokens=dealer.account.bet)
         return dealer
@@ -174,7 +172,7 @@ def new_game(dealer, entities):
 
     return True
 
-    
+
 def initialize():
     '''
     Initialize the game with a dealer and a player.

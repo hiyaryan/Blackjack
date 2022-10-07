@@ -1,6 +1,8 @@
 # Token
 
+
 class Token:
+
     def __init__(self, face, value):
         '''
         face str: the face or name of the token

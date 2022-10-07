@@ -4,6 +4,7 @@
 from table.deck import Deck
 from entity.hand import Hand
 
+
 class Dealer(Hand):
 
     def __init__(self):
@@ -14,7 +15,6 @@ class Dealer(Hand):
         super().__init__("Dealer")
         self.deck = None
 
-    
     def deal(self, role):
         '''
         Dealer deals a card from their stack of cards.
@@ -22,7 +22,6 @@ class Dealer(Hand):
         # print(f"\tCard dealed to {role}.")
         return self.deck.remove_top_card()
 
-    
     def new_deck(self):
         '''
         Provides the dealer with a new stack of cards.
@@ -31,16 +30,14 @@ class Dealer(Hand):
         self.deck = Deck()
         self.deck.shuffle()
 
-
     def check_deck(self):
         '''
         Ensure dealer has enouh cards in deck.
         '''
         if len(self.deck.deck) == 0:
             print("Dealer pulls new deck.\n")
-            self.new_deck()         
+            self.new_deck()
 
-    
     def clear_table(self, entities):
         '''
         Clears the table for all players.
@@ -48,18 +45,15 @@ class Dealer(Hand):
         for entity in entities:
             entity.clear()
 
-    
     def setup_table(self, entities):
         '''
         Sets up the table by giving all players one card.
         '''
         for entity in entities:
-            self.check_deck() # Cards available in deck?
+            self.check_deck()  # Cards available in deck?
             entity.hit(self)  # Give initial card.
-            entity.ready()    # Reset stand value.
-            entity.total()    # Calculate hand value. 
+            entity.ready()  # Reset stand value.
+            entity.total()  # Calculate hand value.
 
-    
     def __str__(self):
         return f"Dealer has {self.deck}.\n"
-        

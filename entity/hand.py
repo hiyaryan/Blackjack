@@ -2,6 +2,7 @@
 # Object that represents the players hand.
 from bank.account import Account
 
+
 class Hand():
 
     def __init__(self, role):
@@ -21,33 +22,29 @@ class Hand():
         self.role = role
         self.stand = False
 
-    
     def hit(self, dealer):
         '''
         Receive another card. 
-        '''        
+        '''
         if len(self.hand) != 0:
             print(f"\t{self.role} hits.\n")
-            
+
         self.hand.append(dealer.deal(self.role))
 
-    
     def stay(self):
         '''
         Player stands and will stop receiving cards.
         '''
         print(f"\t{self.role} stands.\n")
-            
+
         self.stand = True
 
-    
     def ready(self):
         '''
         Player is ready and can receive cards.
         '''
         self.stand = False
 
-    
     def total(self):
         '''
         Calculates the value of the hand.
@@ -55,27 +52,25 @@ class Hand():
         total = 0
 
         for card in self.hand:
-            total += card.value        
+            total += card.value
 
         if total > 21:
             # Revalues the Ace in the hand in case the total hand value sums over 21.
             for card in self.hand:
                 if card.rank == "Ace" and card.value == 14:
                     card.value = 1
-                    
-                    self.total() # retotal
+
+                    self.total()  # retotal
                     return
 
         self.value = total
 
-    
     def clear(self):
         '''
         Clears the hand of cards. Called for every bust or win.
         '''
         self.hand = []
 
-    
     def view(self):
         '''
         Presents the hand. 
@@ -88,6 +83,5 @@ class Hand():
 
         return f"୭ {self.role} Hand\n\n{index}\n\t ✧ {self.value} ✧\n\n"
 
-    
     def __str__(self):
         return f"{self.role} has {len(self.hand)} in hand."
