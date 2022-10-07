@@ -216,7 +216,7 @@ class Account:
                     return False
 
             else:
-                print(f"{self.name} has no tokens to bet.")
+                print(f"{self.name} has no tokens to bet.\n")
                 return False
 
     def menu(self):
@@ -261,8 +261,9 @@ class Account:
                                             title="\n- Deposit -\n")
                 deposit_selection = deposit_options_dict[deposit_menu.show()]
 
-                if deposit_selection != "Return":
+                while deposit_selection != "Return":
                     self.deposit(deposit_selection)
+                    deposit_selection = deposit_options_dict[deposit_menu.show()]
 
             elif selection == "Exchange":
                 exchange_options = [
